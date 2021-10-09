@@ -2,6 +2,8 @@ package com.ly.graph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Graph {
     private ArrayList<String> vertexList;//存储顶点的集合
@@ -30,6 +32,9 @@ public class Graph {
         //测试一把，我们的dfs遍历是否ok
         System.out.println("深度遍历");
         graph.dfs();
+        System.out.println();
+        System.out.println("广度优先遍历");
+        graph.bfs();
     }
     //构造器
     public Graph(int n){
@@ -37,7 +42,7 @@ public class Graph {
         edges=new int[n][n];
         vertexList=new ArrayList<String>();
         numOfEdges=0;
-        isVisited=new boolean[5];
+
     }
     //得到第一个邻接结点的下标w
 
@@ -66,6 +71,7 @@ public class Graph {
     //深度优先遍历方法
     //i 第一次就是0
    private   void dfs(boolean[] isVisited,int i){
+
         //首先，我们访问该结点
         System.out.print(getValueByIndex(i)+"->");
         isVisited[i]=true;
@@ -80,10 +86,49 @@ public class Graph {
     }
     //对dfs进行一个重载，遍历所有的节点，并进行dfs
     public void dfs(){
+        isVisited=new boolean[5];
         //遍历所有的节点，进行dfs[回溯]
         for(int i=0;i<getNumOfVertex();i++){
             if(!isVisited[i]){
                 dfs(isVisited,i);
+            }
+        }
+    }
+    //对一个结点进行广度优先遍历的方法
+    private  void bfs(boolean[] isVisited,int i){
+
+        int u;//表示头结点
+        int w;//表示邻接结点w
+        //队列，记录节点访问记录
+        LinkedList queue=new LinkedList();
+        //访问结点，输出结点信息
+        System.out.print(getValueByIndex(i)+"->");
+        //标记为已访问过
+        isVisited[i]=true;
+        //将节点加入队列
+        queue.addLast(i);
+        while (!queue.isEmpty()){
+            //取出队列的头节点
+            u = (Integer) queue.removeFirst();
+            //得到第一个邻结点的下标w
+            w=getFirstNeighbor(u);
+            while (w!=-1){
+                if (!isVisited[w]){
+                    System.out.print(getValueByIndex(w)+"->");
+                    isVisited[w]=true;
+                    queue.addLast(w);
+                }
+                //如果已经访问过了，以u为起始点，找w后面的下一个邻接点
+                w=getNextNeighbor(u,w);//体现出广度优先
+            }
+        }
+    }
+    //遍历所有的节点，都进行广度优先搜索
+    public void bfs(){
+        isVisited=new boolean[5];
+        for (int i=0;i<getNumOfVertex();i++){
+            if (!isVisited[i]){
+                bfs(isVisited,i);
             }
         }
     }
