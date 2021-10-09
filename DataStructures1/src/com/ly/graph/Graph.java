@@ -27,6 +27,9 @@ public class Graph {
         graph.insertEdge(1,4,1);
         //显示一把邻接矩阵
         graph.showGraph();
+        //测试一把，我们的dfs遍历是否ok
+        System.out.println("深度遍历");
+        graph.dfs();
     }
     //构造器
     public Graph(int n){
@@ -36,6 +39,55 @@ public class Graph {
         numOfEdges=0;
         isVisited=new boolean[5];
     }
+    //得到第一个邻接结点的下标w
+
+    /**
+     *
+     * @param index
+     * @return 如果存在就返回对应的下标，如果不存在就返回-1
+     */
+    public int getFirstNeighbor(int index){
+        for (int j=0;j<vertexList.size();j++){
+            if (edges[index][j]>0){
+                return j;
+            }
+        }
+        return -1;
+    }
+    //根据前一个邻接结点的下标来获取下一个邻接结点
+    public int getNextNeighbor(int v1,int v2){
+        for (int j=v2+1;j<vertexList.size();j++){
+            if (edges[v1][j]>0){
+                return j;
+            }
+        }
+        return -1;
+    }
+    //深度优先遍历方法
+    //i 第一次就是0
+   private   void dfs(boolean[] isVisited,int i){
+        //首先，我们访问该结点
+        System.out.print(getValueByIndex(i)+"->");
+        isVisited[i]=true;
+        int w=getFirstNeighbor(i);
+        while(w!=-1){
+            if (!isVisited[w]){
+                dfs(isVisited,w);
+            }
+            //如果w结点已经被访过了
+           w=getNextNeighbor(i,w);
+        }
+    }
+    //对dfs进行一个重载，遍历所有的节点，并进行dfs
+    public void dfs(){
+        //遍历所有的节点，进行dfs[回溯]
+        for(int i=0;i<getNumOfVertex();i++){
+            if(!isVisited[i]){
+                dfs(isVisited,i);
+            }
+        }
+    }
+
     //返回节点的个数
     public int getNumOfVertex(){
         return vertexList.size();
